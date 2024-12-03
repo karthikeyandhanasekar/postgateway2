@@ -8,7 +8,7 @@ const cors = require("cors");
 
 const indexRouter = require("./routes/index");
 const requestLogger = require("./middleware/requestMiddleware");
-const errorHandler = require("./middleware/errorsMiddleware");
+const { errorHandler } = require("./middleware/errorsMiddleware");
 const authorizationMiddleware = require("./middleware/authorizationMiddleware");
 
 const app = express();
@@ -16,6 +16,8 @@ const app = express();
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
+app.set("trust proxy", true); // Enable proxy trust in Express
+
 app.use(cors());
 app.use(bodyParser.json());
 app.use(logger("dev"));
@@ -33,7 +35,6 @@ app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
-
   // render the error page
   res.status(err.status || 500);
   res.render("error");

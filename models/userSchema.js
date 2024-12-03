@@ -48,14 +48,14 @@ userSchema = mongoose.Schema(
     password: {
       type: String,
       required: true,
-      validate: [
-        validatePassword,
-        "Your password must be at least 8 characters long, containing a mix of uppercase and lowercase letters, at least one digit, and one special character (e.g., !@#$%^&*)",
-      ],
-      match: [
-        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-        "Your password must be at least 8 characters long, containing a mix of uppercase and lowercase letters, at least one digit, and one special character (e.g., !@#$%^&*)",
-      ],
+      // validate: [
+      //   validatePassword,
+      //   "Your password must be at least 8 characters long, containing a mix of uppercase and lowercase letters, at least one digit, and one special character (e.g., !@#$%^&*)",
+      // ],
+      // match: [
+      //   /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+      //   "Your password must be at least 8 characters long, containing a mix of uppercase and lowercase letters, at least one digit, and one special character (e.g., !@#$%^&*)",
+      // ],
     },
     loginAt: {
       type: Date,
@@ -69,16 +69,4 @@ userSchema = mongoose.Schema(
   },
   { timestamps: true } // This will automatically add createdAt and updatedAt fields
 );
-
-// // Pre-save hook to trigger Mongoose validation
-// userSchema.pre("save", async function (next) {
-//   try {
-//     // Trigger Mongoose's built-in validation
-//     await this.validate(); // This will validate all fields in the schema
-//     next(); // Proceed to the next middleware or save if validation passes
-//   } catch (error) {
-//     next(error); // If validation fails, pass the error to the next middleware
-//   }
-// });
-
 exports.User = mongoose.model("Users", userSchema);

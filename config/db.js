@@ -3,7 +3,7 @@ const baseUrl = process.env.MONGODB || "0.0.0.0:27017";
 
 exports.connectToDb = async () => {
   try {
-    await mongoose.connect(`mongodb://${baseUrl}/jobPortal`);
+    await mongoose.connect(`mongodb://${baseUrl}/postawayDB`);
     console.log("MongoDB connected using mongoose");
   } catch (err) {
     console.log(err);

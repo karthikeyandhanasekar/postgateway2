@@ -82,3 +82,31 @@ exports.getFoldersName = (dirPath) => {
     });
   });
 };
+
+exports.genericMongooseErrorFunction = (error, next) => {
+  const { CustomErrorHandler } = require("../middleware/errorsMiddleware");
+  if (error.name === "ValidationError") {
+    errorMessage =
+      "Validation failed: " +
+      Object.values(error.errors)
+        .map((e) => e.message)
+        .join(", ");
+    // You can throw a custom error or format it to return a structured response
+    next(new CustomErrorHandler(400, errorMessage));
+  }
+
+  if (error.code === 11000) {
+    const duplicateKey = error.message.match(/index: (.*)_1 dup key/);
+    if (duplicateKey && duplicateKey[1]) {
+      const field = duplicateKey[1]; // Extracted field name (e.g., email, phoneNumber)
+      next(
+        new CustomErrorHandler(
+          400,
+          `Duplicate value found for the field: ${field}`
+        )
+      );
+    }
+  }
+
+  next(new CustomErrorHandler(500, `Internal Server Error`));
+};

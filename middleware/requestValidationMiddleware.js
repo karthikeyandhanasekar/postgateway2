@@ -151,3 +151,41 @@ exports.responseFriendValidation = async (req, res, next) => {
   }
   next();
 };
+
+exports.toggleLikeValidation = async (req, res, next) => {
+  const rules = [
+    // Validate "mail" field
+    body("like").isBoolean().notEmpty().withMessage("Title is mandatory"),
+    body("postId").optional(),
+    body("commentId").optional(),
+    // Custom file validation inside body()
+    body().custom((value, { req }) => {
+      if (!req.body.postId && !req.body.commentId) {
+        throw new CustomErrorHandler(
+          400,
+          "Either postId or commentId must be provided"
+        );
+      }
+      return true; // Validation passed
+    }),
+  ];
+  await Promise.all(
+    rules.map((rule) => {
+      return rule.run(req);
+    })
+  );
+  // Check validation results
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    next(
+      new CustomErrorHandler(
+        400,
+        errors
+          .array()
+          .map((ele) => ele.msg)
+          .join(", ")
+      )
+    );
+  }
+  next();
+};

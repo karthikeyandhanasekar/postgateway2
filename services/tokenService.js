@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const jwtParameters = {
   secretKey: "1234567980",
-  duration: "1h",
+  duration: "48h",
   algorithm: "HS256", // Specify the algorithm explicitly
 };
 // Function to create a JWT token

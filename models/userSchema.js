@@ -5,11 +5,6 @@ const validateEmail = function (email) {
   return re.test(email);
 };
 
-const validatePassword = function (value) {
-  const re =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-  return re.test(value);
-};
 
 userSchema = mongoose.Schema(
   {
@@ -63,7 +58,7 @@ userSchema = mongoose.Schema(
     },
     loginDevices: [
       {
-        type: String,
+        type: Object,
       },
     ],
   },

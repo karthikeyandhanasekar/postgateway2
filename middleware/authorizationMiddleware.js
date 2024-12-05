@@ -1,33 +1,35 @@
+const { User } = require("../models/userSchema");
 const { validateToken } = require("../services/tokenService");
+const { CustomErrorHandler } = require("./errorsMiddleware");
 
-const authorizationMiddleware = (req, res, next) => {
+const authorizationMiddleware = async (req, res, next) => {
   // Get the token from the request header
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({
-      success: false,
-      isNotLogin: true,
-      message: "No token provided",
-    });
+    throw new CustomErrorHandler(401, `No Token provided`);
   }
 
-  const token = authHeader.split(" ")[1];  
+  const token = authHeader.split(" ")[1];
   try {
     // Verify the token
     const decoded = validateToken(token);
     // Attach user information to the request object for further use
     req.user = decoded;
 
-    // Proceed to the next middleware or route handler
+    const user = await User.findById(decoded._id);
+    if (!user) {
+      throw new CustomErrorHandler(404, "User Not found");
+    }
+
+    const deviceIndex = user.loginDevices.findIndex(
+      (device) => device.token === token
+    );
+    if (deviceIndex === -1) {
+      throw new CustomErrorHandler(404, "Token Expired /Invalid");
+    }
     next();
   } catch (error) {
-    return res
-      .status(401)
-      .json({
-        success: false,
-        isSessionExpired: true,
-        message: "Invalid token",
-      });
+    next(new CustomErrorHandler(401, "Token Expired/ Invalid"));
   }
 };
 

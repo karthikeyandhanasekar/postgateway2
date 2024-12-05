@@ -94,4 +94,60 @@ exports.createPostValidation = async (req, res, next) => {
   next();
 };
 
-exports.updatePostValidation = async (req, res, next) => {};
+exports.createFriendValidation = async (req, res, next) => {
+  const rules = [
+    // Validate "mail" field
+    body("userId").trim().notEmpty().withMessage("User ID is mandatory"),
+    body("friendId").trim().notEmpty().withMessage("FriendId is mandatory"),
+  ];
+  await Promise.all(
+    rules.map((rule) => {
+      return rule.run(req);
+    })
+  );
+  // Check validation results
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    next(
+      new CustomErrorHandler(
+        400,
+        errors
+          .array()
+          .map((ele) => ele.msg)
+          .join(", ")
+      )
+    );
+  }
+  next();
+};
+
+exports.responseFriendValidation = async (req, res, next) => {
+  const statusEnum = ["Accepted", "Rejected"];
+  const rules = [
+    body("status")
+      .trim()
+      .notEmpty()
+      .withMessage("Status is mandatory")
+      .isIn(statusEnum)
+      .withMessage(`Status must be one of : ${statusEnum.join(",")}`),
+  ];
+  await Promise.all(
+    rules.map((rule) => {
+      return rule.run(req);
+    })
+  );
+  // Check validation results
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    next(
+      new CustomErrorHandler(
+        400,
+        errors
+          .array()
+          .map((ele) => ele.msg)
+          .join(", ")
+      )
+    );
+  }
+  next();
+};

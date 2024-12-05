@@ -46,3 +46,52 @@ exports.loginValidation = async (req, res, next) => {
   }
   next();
 };
+
+exports.createPostValidation = async (req, res, next) => {
+  const rules = [
+    // Validate "mail" field
+    body("title").trim().notEmpty().withMessage("Title is mandatory"),
+    body("description")
+      .trim()
+      .notEmpty()
+      .withMessage("Description is mandatory"),
+    body("userId").trim().notEmpty().withMessage("User ID is mandatory"),
+    // Custom file validation inside body()
+    body("image").custom((value, { req }) => {
+      const file = req.file;
+
+      // Check if file is uploaded
+      if (!file) {
+        throw new CustomErrorHandler(400, "Image is mandatory");
+      }
+
+      // Validate file type
+      const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif"];
+      if (!allowedMimeTypes.includes(file.mimetype)) {
+        throw new CustomErrorHandler(400, "Invalid Image format");
+      }
+      return true; // Validation passes
+    }),
+  ];
+  await Promise.all(
+    rules.map((rule) => {
+      return rule.run(req);
+    })
+  );
+  // Check validation results
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    next(
+      new CustomErrorHandler(
+        400,
+        errors
+          .array()
+          .map((ele) => ele.msg)
+          .join(", ")
+      )
+    );
+  }
+  next();
+};
+
+exports.updatePostValidation = async (req, res, next) => {};

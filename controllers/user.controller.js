@@ -4,7 +4,7 @@ const { genericMongooseErrorFunction } = require("../utils/generalFunctions");
 
 exports.registerUser = async (req, res, next) => {
   try {
-    const savedUser = await createUser(req.body);
+    const savedUser = await UserRepo.createUser(req.body);
     return res.status(201).json(savedUser);
   } catch (error) {
     genericMongooseErrorFunction(error, next);

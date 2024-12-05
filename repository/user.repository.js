@@ -107,6 +107,24 @@ exports.getSpecificUserDetails = async (_id) => {
     throw error;
   }
 };
+
+exports.getUserDetails = async (_id) => {
+  try {
+    // Remove the login device based on the provided token
+    const user = await User.find().select({
+      _id: 1,
+      name: 1,
+      email: 1,
+      gender: 1,
+    });
+    if (!user) {
+      throw new CustomErrorHandler(404, "User Not found");
+    }
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
 exports.updateUsers = async (_id, data) => {
   try {
     const { name, phoneNumber, gender } = data;

@@ -9,8 +9,6 @@ const cors = require("cors");
 const indexRouter = require("./routes/index");
 const requestLogger = require("./middleware/requestMiddleware");
 const { errorHandler } = require("./middleware/errorsMiddleware");
-const authorizationMiddleware = require("./middleware/authorizationMiddleware");
-
 const app = express();
 
 // view engine setup
@@ -19,10 +17,11 @@ app.set("view engine", "jade");
 app.set("trust proxy", true); // Enable proxy trust in Express
 
 app.use(cors());
+
+app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(logger("dev"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(requestLogger);

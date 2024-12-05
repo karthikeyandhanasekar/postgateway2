@@ -6,8 +6,6 @@ exports.toggleLike = async (req, res, next) => {
   try {
     req.body.userId = req.user._id;
     const response = await LikeRepo.toggleLike(req.body);
-    console.log(response);
-
     res.status(201).json({
       success: true,
       response,

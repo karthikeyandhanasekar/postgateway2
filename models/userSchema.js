@@ -5,7 +5,6 @@ const validateEmail = function (email) {
   return re.test(email);
 };
 
-
 userSchema = mongoose.Schema(
   {
     name: {
@@ -51,6 +50,10 @@ userSchema = mongoose.Schema(
       //   /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
       //   "Your password must be at least 8 characters long, containing a mix of uppercase and lowercase letters, at least one digit, and one special character (e.g., !@#$%^&*)",
       // ],
+    },
+    avatar: {
+      type: String,
+      default: null,
     },
     loginAt: {
       type: Date,

@@ -99,6 +99,7 @@ exports.getUserDetails = async (req, res, next) => {
 exports.updateUser = async (req, res, next) => {
   try {
     // Capture device-related info (User-Agent, IP, Device ID, etc.)
+    req.body.avatar = req.file?.path;
     const { userId } = req.params;
     const userDetails = await UserRepo.updateUsers(userId, req.body);
     return res.status(200).json({

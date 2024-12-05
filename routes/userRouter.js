@@ -5,6 +5,7 @@ const {
   loginValidation,
 } = require("../middleware/requestValidationMiddleware");
 const authorizationMiddleware = require("../middleware/authorizationMiddleware");
+const upload = require("../services/storage");
 
 router.post("/signup", User.registerUser);
 
@@ -24,6 +25,6 @@ router
 
 router
   .route("/update-details/:userId")
-  .put(authorizationMiddleware, User.updateUser);
+  .put(authorizationMiddleware, upload.single("avatar"), User.updateUser);
 
 module.exports = router;

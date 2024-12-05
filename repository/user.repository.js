@@ -98,6 +98,7 @@ exports.getSpecificUserDetails = async (_id) => {
       name: 1,
       email: 1,
       gender: 1,
+      avatar: 1,
     });
     if (!user) {
       throw new CustomErrorHandler(404, "User Not found");
@@ -116,6 +117,7 @@ exports.getUserDetails = async (_id) => {
       name: 1,
       email: 1,
       gender: 1,
+      avatar: 1,
     });
     if (!user) {
       throw new CustomErrorHandler(404, "User Not found");
@@ -127,11 +129,10 @@ exports.getUserDetails = async (_id) => {
 };
 exports.updateUsers = async (_id, data) => {
   try {
-    const { name, phoneNumber, gender } = data;
     // Remove the login device based on the provided token
     const user = await User.findOneAndUpdate(
       { _id },
-      { name, phoneNumber, gender },
+      { ...data },
       { new: true }
     );
     return user;
